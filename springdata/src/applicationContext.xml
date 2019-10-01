@@ -5,6 +5,9 @@
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
+    <!-- 配置自动扫描的包 -->
+    <context:component-scan base-package="com.atguigu.springdata"/>
+
     <!-- 1. 配置数据源-->
     <!-- 这里有一个小技巧,配完一个就试一下,免得后面n多错误 -->
     <context:property-placeholder location="classpath:db.properties"/>
