@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +27,18 @@ public class SpringDataTest {
         personService = ctx.getBean(PersonService.class);
     }
 
-    // 测试使用继承了CrudRepository接口的方法执行批量保存操作
+    //  测试使用继承了CrudRepository接口的接口执行批量查询操作
+    @Test
+    public void testFindAll () {
+        List<Integer> ids = new ArrayList<>();
+        for (int i = 6; i< 20; i++) {
+            ids.add(i);
+        }
+        List<Person> personList = personService.findPersonsByIds(ids);
+        System.out.println(personList.size());
+    }
+
+    // 测试使用继承了CrudRepository接口的接口执行批量保存操作
     @Test
     public void testCRUDRepository () {
         List<Person> persons = new ArrayList<>();
