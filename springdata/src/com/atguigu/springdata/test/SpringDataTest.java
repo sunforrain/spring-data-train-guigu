@@ -3,6 +3,7 @@ package com.atguigu.springdata.test;
 import com.atguigu.springdata.Person;
 import com.atguigu.springdata.PersonRepository;
 import com.atguigu.springdata.PersonService;
+import com.atguigu.springdata.commonrepositorymethod.AddressRepository;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -28,6 +29,19 @@ public class SpringDataTest {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         personRepository = ctx.getBean(PersonRepository.class);
         personService = ctx.getBean(PersonService.class);
+    }
+
+    @Test
+    public void testCommonCustomRepositoryMethod(){
+        ApplicationContext ctx2 = new ClassPathXmlApplicationContext("classpath:com/atguigu/springdata/commonrepositorymethod/applicationContext2.xml");
+        AddressRepository addressRepository = ctx2.getBean(AddressRepository.class);
+        addressRepository.method();
+    }
+
+    // 为一个repository添加自定义方法的示例
+    @Test
+    public void testCustomRepositoryMethod(){
+        personRepository.test();
     }
 
     /**

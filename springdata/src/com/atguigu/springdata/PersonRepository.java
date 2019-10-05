@@ -42,7 +42,8 @@ import java.util.List;
 //public interface PersonRepository extends Repository<Person, Integer>{
 //public interface PersonRepository extends CrudRepository<Person, Integer> {
 //public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
-public interface PersonRepository extends JpaRepository<Person, Integer>, JpaSpecificationExecutor<Person> {
+public interface PersonRepository extends JpaRepository<Person, Integer>,
+        JpaSpecificationExecutor<Person>, PersonDao {
 
     // 根据lastName 来获取对应的 Person
     Person getByLastName(String lastName);
