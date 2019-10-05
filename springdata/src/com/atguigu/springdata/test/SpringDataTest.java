@@ -29,6 +29,25 @@ public class SpringDataTest {
         personService = ctx.getBean(PersonService.class);
     }
 
+    // 使用继承了JpaRepository接口的接口执行merge操作
+    @Test
+    public void testJpaRepository () {
+        Person person = new Person();
+        person.setBirth(new Date());
+        person.setEmail("xy@atguigu.com");
+        person.setLastName("xyz");
+        // 不设置id,直接执行insert
+        // 设置了id则会去先select对应id的数据后,执行update
+        // 这时就相当于merge方法
+        person.setId(27);
+
+        Person person2 = personRepository.saveAndFlush(person);
+
+        // 设置了id就能发现两个对象不是一个对象
+        System.out.println(person == person2);
+
+    }
+
     // 测试使用继承了PagingAndSortingRepository接口的接口执行分页查询操作
     @Test
     public void testPagingAndSortingRepository () {

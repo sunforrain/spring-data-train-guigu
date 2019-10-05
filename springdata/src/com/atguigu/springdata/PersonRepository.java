@@ -1,6 +1,7 @@
 package com.atguigu.springdata;
 
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -36,7 +37,8 @@ import java.util.List;
 //@RepositoryDefinition(domainClass = Person.class,idClass = Integer.class)
 //public interface PersonRepository extends Repository<Person, Integer>{
 //public interface PersonRepository extends CrudRepository<Person, Integer> {
-public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
+//public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
+public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     // 根据lastName 来获取对应的 Person
     Person getByLastName(String lastName);
