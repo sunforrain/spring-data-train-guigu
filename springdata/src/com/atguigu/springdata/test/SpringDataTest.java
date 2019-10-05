@@ -8,8 +8,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.*;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,6 +28,48 @@ public class SpringDataTest {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         personRepository = ctx.getBean(PersonRepository.class);
         personService = ctx.getBean(PersonService.class);
+    }
+
+    /**
+     *  目标: 实现带查询条件的分页.  id > 5 的条件
+     *
+     *  JpaSpecificationExecutor 可以用来构建动态的查询方法
+     *  调用 JpaSpecificationExecutor 的 Page<T> findAll(Specification<T> spec, Pageable pageable);
+     * 	 Specification: 封装了 JPA Criteria 查询的查询条件
+     * 	 Pageable: 封装了请求分页的信息: 例如 pageNo, pageSize, Sort
+     */
+    @Test
+    public void testJpaSpecificationExecutor () {
+        int pageNo = 3 - 1;
+        int pageSize = 5;
+        PageRequest pageable = new PageRequest(pageNo, pageSize);
+
+        //通常使用 Specification 的匿名内部类
+        Specification<Person> specification = new Specification<Person>() {
+            /**
+             * @param *root: 代表查询的实体类.
+             * @param criteriaQuery: 可以从中可到 Root 对象, 即告知 JPA Criteria 查询要查询哪一个实体类. 还可以
+             * 来添加查询条件, 还可以结合 EntityManager 对象得到最终查询的 TypedQuery 对象.
+             * @param *criteriaBuilder: CriteriaBuilder 对象. 用于创建 Criteria 相关对象的工厂. 当然可以从中获取到 Predicate 对象
+             * @return: *Predicate 类型, 代表一个查询条件.
+             */
+            @Override
+            public Predicate toPredicate(Root<Person> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                // 使用path实现一个属性导航的目的,告诉criteriaBuilder比较的属性是id
+                Path path = root.get("id");
+                // 使用criteria的builder,这里是查询id大于5的
+                Predicate predicate = criteriaBuilder.gt(path, 5);
+                return predicate;
+            }
+        };
+
+        Page<Person> page = personRepository.findAll(specification, pageable);
+
+        System.out.println("总记录数: " + page.getTotalElements());
+        System.out.println("当前第几页: " + (page.getNumber() + 1));
+        System.out.println("总页数: " + page.getTotalPages());
+        System.out.println("当前页面的 List: " + page.getContent());
+        System.out.println("当前页面的记录数: " + page.getNumberOfElements());
     }
 
     // 使用继承了JpaRepository接口的接口执行merge操作
@@ -62,6 +105,7 @@ public class SpringDataTest {
         Page<Person> page =personRepository.findAll(pageRequest);
 
         System.out.println("总记录数: " + page.getTotalElements());
+        // 这里不用()包一下会变成x1的页码
         System.out.println("当前第几页: " + (page.getNumber() + 1));
         System.out.println("总页数: " + page.getTotalPages());
         System.out.println("当前页面的 List: " + page.getContent());

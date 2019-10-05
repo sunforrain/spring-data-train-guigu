@@ -2,6 +2,7 @@ package com.atguigu.springdata;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -33,12 +34,15 @@ import java.util.List;
  *
  * CrudRepository是Repository的子接口,定义了专门用于crud操作的接口
  * PagingAndSortingRepository是CrudRepository的子接口,定义了用于分页查询的功能
+ * JpaRepository是PagingAndSortingRepository的子接口,定义了一些jpa的操作
+ * JpaSpecificationExecutor不属于Repository的体系,但是PagingAndSortingRepository不能实现带查询条件的分页
+ *  而,JpaSpecificationExecutor可以实现,也可以实现不分页的使用查询条件的分页
  */
 //@RepositoryDefinition(domainClass = Person.class,idClass = Integer.class)
 //public interface PersonRepository extends Repository<Person, Integer>{
 //public interface PersonRepository extends CrudRepository<Person, Integer> {
 //public interface PersonRepository extends PagingAndSortingRepository<Person, Integer> {
-public interface PersonRepository extends JpaRepository<Person, Integer> {
+public interface PersonRepository extends JpaRepository<Person, Integer>, JpaSpecificationExecutor<Person> {
 
     // 根据lastName 来获取对应的 Person
     Person getByLastName(String lastName);
