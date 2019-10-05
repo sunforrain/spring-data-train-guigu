@@ -6,6 +6,8 @@ import com.atguigu.springdata.PersonService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.sql.DataSource;
@@ -25,6 +27,26 @@ public class SpringDataTest {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         personRepository = ctx.getBean(PersonRepository.class);
         personService = ctx.getBean(PersonService.class);
+    }
+
+    // 测试使用继承了PagingAndSortingRepository接口的接口执行分页查询操作
+    @Test
+    public void testPagingAndSortingRepository () {
+        //pageNo 从 0 开始.这里要查第三页就给减一
+        int pageNo = 3 - 1;
+        int pageSize = 5;
+        //Pageable 接口通常使用的其 PageRequest 实现类. 其中封装了需要分页的信息
+        //排序相关的. Sort 封装了
+        // 排序的信息
+        //Order 是具体针对于某一个属性进行升序还是降序.
+        PageRequest pageRequest = new PageRequest(pageNo, pageSize);
+        Page<Person> page =personRepository.findAll(pageRequest);
+
+        System.out.println("总记录数: " + page.getTotalElements());
+        System.out.println("当前第几页: " + (page.getNumber() + 1));
+        System.out.println("总页数: " + page.getTotalPages());
+        System.out.println("当前页面的 List: " + page.getContent());
+        System.out.println("当前页面的记录数: " + page.getNumberOfElements());
     }
 
     //  测试使用继承了CrudRepository接口的接口执行批量查询操作
